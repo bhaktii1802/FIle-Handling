@@ -2,12 +2,10 @@ import psycopg2
 import csv
 import os
 
-# ==========================
-#  CONFIGURATION
-# ==========================
-DB_NAME = "google_data"        # your database name
-DB_USER = "postgres"        # your PostgreSQL username
-DB_PASSWORD = "root"  # your PostgreSQL password
+
+DB_NAME = "google_data"        
+DB_USER = "postgres"        
+DB_PASSWORD = "root"  
 DB_HOST = "localhost"
 DB_PORT = "5432"
 
@@ -21,9 +19,7 @@ TABLE_FULL = "googl_daily_prices_g"
 TABLE_ABOVE200 = "top_closing_above_200"
 TABLE_TOP5 = "top_5_closing_g  "
 
-# ==========================
-#  FUNCTION TO INSERT CSV
-# ==========================
+
 def insert_csv(file_path, table_name):
     """Insert CSV data into the given PostgreSQL table."""
     
@@ -45,14 +41,14 @@ def insert_csv(file_path, table_name):
             reader = csv.DictReader(f)
 
             for row in reader:
-                # Convert volume to integer
+               
                 if "volume" in row and row["volume"]:
                     try:
                         row["volume"] = int(float(row["volume"]))
                     except ValueError:
-                        row["volume"] = None  # keep NULL if invalid
+                        row["volume"] = None  
 
-                # Prepare and execute INSERT
+              
                 cur.execute(
                     f"""INSERT INTO {table_name} (date, open, high, low, close, volume)
                         VALUES (%s, %s, %s, %s, %s, %s)""",
@@ -72,9 +68,7 @@ def insert_csv(file_path, table_name):
             conn.close()
 
 
-# ==========================
-#  RUN INSERTS
-# ==========================
+
 insert_csv(CSV_FULL, TABLE_FULL)
 insert_csv(CSV_ABOVE200, TABLE_ABOVE200)
 insert_csv(CSV_TOP5, TABLE_TOP5)
